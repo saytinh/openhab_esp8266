@@ -1,0 +1,68 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+
+var Number counter = 1
+var Timer timer = null
+
+
+rule "Update max and min temperatures"
+when
+	Item Weather_Temperature changed or
+	Time cron "0 0 0 * * ?" or
+	System started
+then	
+	postUpdate(Weather_Temp_Max, Weather_Temperature.maximumSince(now.toDateMidnight).state)
+	postUpdate(Weather_Temp_Min, Weather_Temperature.minimumSince(now.toDateMidnight).state)
+	logInfo("Weather","Temperature evolved of " + Weather_Temperature.deltaSince(now.minusMinutes(2)).toString + " degrees.")
+end
+
+rule "Update max and min Indoor_temperatures"
+when
+	Item Indoor_Weather_Temperature changed or
+	Time cron "0 0 0 * * ?" or
+	System started
+then	
+	postUpdate(Indoor_Weather_Temp_Max, Indoor_Weather_Temperature.maximumSince(now.toDateMidnight).state)
+	postUpdate(Indoor_Weather_Temp_Min, Indoor_Weather_Temperature.minimumSince(now.toDateMidnight).state)
+	logInfo("Weather","Temperature evolved of " + Indoor_Weather_Temperature.deltaSince(now.minusMinutes(2)).toString + " degrees.")
+end
+
+// Creates an item that stores the last update time of this item
+rule "Records last weather update time"
+when
+  Item Weather_Temperature received update
+then
+  postUpdate(Weather_LastUpdate, new DateTimeType())
+end
+
+// Creates an item that stores the last update time of this item
+rule "Records last Indoor_weather update time"
+when
+  Item Indoor_Weather_Temperature received update
+then
+  postUpdate(Indoor_Weather_LastUpdate, new DateTimeType())
+end
+
+// This rule will be used to test Scale transformation service
+rule "Compute humidex"
+when Item Weather_Temperature changed or
+	 Item Weather_Humidity changed 
+then
+	var Number T = Weather_Temperature.state as DecimalType
+	var Number H = Weather_Humidity.state as DecimalType	
+	var Number x = 7.5 * T/(237.7 + T)
+	var Number e = 6.112 * Math::pow(10, x.doubleValue) * H/100
+	var Number humidex = T + (new Double(5) / new Double(9)) * (e - 10)
+	Weather_Humidex.postUpdate(humidex)
+end
+
+rule "Request temp frequent"
+when
+        Time cron "0/30 * * * * ?" or
+        System started
+then
+	postUpdate(temp_request, "temp")
+end
+
+//	sendSms("+84913360565", "test")

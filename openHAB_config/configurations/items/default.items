@@ -1,0 +1,28 @@
+Switch light_btn			"Light"				{mqtt=">[mybroker:/saytinh/myhome/light_temp:command:ON:ON],>[mybroker:/saytinh/myhome/light_temp:command:OFF:OFF]"}
+String connection_status	"Connection [%s]"	{mqtt="<[mybroker:/saytinh/myhome/light_temp/lwt:state:default]"}
+String temp_request                     		{mqtt=">[mybroker:/saytinh/myhome/light_temp:state:*:default]"}
+
+
+//Switch fan_speed			"ON/Speed"
+//Switch fan__off				"OFF"
+
+Group Weather_Chart												
+Number Weather_Temperature 		"Outdoor Temperature [%.1f °C]"	<temperature> (Weather_Chart) { http="<[http://weather.yahooapis.com/forecastrss?w=91888417&u=c:60000:XSLT(yahoo_weather_temperature.xsl)]" }
+Number Weather_Humidity 		"Outdoor Humidity [%.1f %%]"	<temperature> (Weather) { http="<[http://weather.yahooapis.com/forecastrss?w=91888417&u=c:60000:XSLT(yahoo_weather_humidity.xsl)]" }
+Number FeelLike_Temperature 	"Feel likes [%.1f °C]"	<temperature> (Weather) { http="<[http://weather.yahooapis.com/forecastrss?w=91888417&u=c:60000:XSLT(yahoo_weather_feel_like.xsl)]" }
+Number Weather_Humidex			"Humidex [SCALE(humidex.scale):%s]" 			(Weather)
+Number Weather_Temp_Max 		"Todays Maximum [%.1f °C]"	<temperature> (Weather_Chart)
+Number Weather_Temp_Min 		"Todays Minimum [%.1f °C]"	<temperature> (Weather_Chart)
+Number Weather_Chart_Period		"Chart Period"
+DateTime Weather_LastUpdate		"Last Update [%1$ta %1$tR]"	<clock>
+
+Group Indoor_Weather_Chart												
+Number Indoor_Weather_Temperature 		"Indoor Temperature [%.1f °C]"	<temperature> (Indoor_Weather_Chart) {mqtt="<[mybroker:/saytinh/myhome/temp:state:default]"}
+Number Indoor_Weather_Temp_Max 			"Todays Maximum [%.1f °C]"	<temperature> (Indoor_Weather_Chart)
+Number Indoor_Weather_Temp_Min 			"Todays Minimum [%.1f °C]"	<temperature> (Indoor_Weather_Chart)
+Number Indoor_Weather_Chart_Period		"Chart Period"
+DateTime Indoor_Weather_LastUpdate		"Last Update [%1$ta %1$tR]"	<clock>
+		
+
+/* NTP binding demo item */
+DateTime		Date			"Date [%1$tA, %1$td.%1$tm.%1$tY]"	<calendar>	{ ntp="Asia/Phnom_Penh:en_EN" }

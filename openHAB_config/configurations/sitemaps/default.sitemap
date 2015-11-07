@@ -1,0 +1,53 @@
+sitemap default label="My Home"
+{
+	Frame label="Light"{
+		Switch	item=light_btn							icon="light"
+		Text	item=connection_status					icon="wifi"
+	}
+		//Frame label="Fan"{
+		//Switch	item=fan_speed							icon="fan"		mappings=[ON="Up"]
+		//Switch	item=fan__off							icon="power"
+		//}
+	Frame label="Weather" {
+		Text item=Weather_Temperature valuecolor=[Weather_LastUpdate=="Uninitialized"="lightgray",Weather_LastUpdate>90="lightgray",>25="orange",>15="green",>5="orange",<=5="blue"] {
+			Frame {
+				Text item=Weather_Temp_Max valuecolor=[>25="orange",>15="green",>5="orange",<=5="blue"]
+				Text item=Weather_Temp_Min valuecolor=[>25="orange",>15="green",>5="orange",<=5="blue"]
+				Text item=Weather_Humidity
+				Text item=FeelLike_Temperature
+				Text item=Weather_Humidex
+				Text item=Weather_LastUpdate visibility=[Weather_LastUpdate>30] valuecolor=[Weather_LastUpdate>120="orange", Weather_LastUpdate>300="red"]
+			}
+			Frame {
+				Switch item=Weather_Chart_Period label="Chart Period" mappings=[0="Hour", 1="Day", 2="Week"]
+				Chart item=Weather_Chart period=h refresh=6000 visibility=[Weather_Chart_Period==0, Weather_Chart_Period=="Uninitialized"]
+				Chart item=Weather_Chart period=D refresh=30000 visibility=[Weather_Chart_Period==1]
+				Chart item=Weather_Chart period=W refresh=30000 visibility=[Weather_Chart_Period==2]
+			}
+		}
+		
+		
+		Text item=Indoor_Weather_Temperature valuecolor=[Indoor_Weather_LastUpdate=="Uninitialized"="lightgray",Indoor_Weather_LastUpdate>90="lightgray",>25="orange",>15="green",>5="orange",<=5="blue"] {
+			Frame {
+				Text item=Indoor_Weather_Temp_Max valuecolor=[>25="orange",>15="green",>5="orange",<=5="blue"]
+				Text item=Indoor_Weather_Temp_Min valuecolor=[>25="orange",>15="green",>5="orange",<=5="blue"]
+				Text item=Indoor_Weather_LastUpdate visibility=[Indoor_Weather_LastUpdate>30] valuecolor=[Indoor_Weather_LastUpdate>120="orange", Indoor_Weather_LastUpdate>300="red"]
+			}
+			Frame {
+				Switch item=Indoor_Weather_Chart_Period label="Chart Period" mappings=[0="Hour", 1="Day", 2="Week"]
+				Chart item=Indoor_Weather_Chart period=h refresh=6000 visibility=[Indoor_Weather_Chart_Period==0, Indoor_Weather_Chart_Period=="Uninitialized"]
+				Chart item=Indoor_Weather_Chart period=D refresh=30000 visibility=[Indoor_Weather_Chart_Period==1]
+				Chart item=Indoor_Weather_Chart period=W refresh=30000 visibility=[Indoor_Weather_Chart_Period==2]
+			}
+		}
+	}
+	
+	Frame label="Date" {
+		Text item=Date
+	}
+	Frame label="Cameras" {
+		Text label="Camera" icon="video" {
+			Webview url="http://www.ustream.tv/embed/20608371?v=3&wmode=direct" height=10
+		}
+	}
+}
