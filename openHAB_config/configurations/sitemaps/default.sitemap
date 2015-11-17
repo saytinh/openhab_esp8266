@@ -47,7 +47,7 @@ sitemap default label="My Home"
 	}
 	Frame label="Cameras" {
 		Text label="Camera" icon="video" {
-			Webview url="http://www.ustream.tv/embed/20608371?v=3&wmode=direct" height=10
+			Webview url="put your video streaming link here" height=10
 		}
 	}
 }
